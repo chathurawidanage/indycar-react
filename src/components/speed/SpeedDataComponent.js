@@ -3,6 +3,8 @@ import {Card} from "@blueprintjs/core";
 import "./SpeedDataComponent.css";
 import {Icon} from "@blueprintjs/core/lib/esm/components/icon/icon";
 import {Line} from "react-chartjs-2";
+import CarInformationService from "../../services/CarInformationService";
+import PropTypes from 'prop-types';
 
 /**
  * @author Chathura Widanage
@@ -12,6 +14,7 @@ export default class SpeedDataComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            carInformation: undefined,
             x: []
         };
 
@@ -28,6 +31,11 @@ export default class SpeedDataComponent extends React.Component {
             }
             this.setState({x});
         }, 5000);
+
+        //get car information
+        CarInformationService.getCarInformation(this.props.carNumber).then(data => {
+            console.log("Car data", data);
+        });
     }
 
     render() {
@@ -138,3 +146,7 @@ export default class SpeedDataComponent extends React.Component {
         );
     }
 }
+
+SpeedDataComponent.propTypes = {
+    carNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};

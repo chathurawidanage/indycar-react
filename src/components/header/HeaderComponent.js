@@ -81,7 +81,7 @@ export default class HeaderComponent extends React.Component {
                             <div className="weather-indicator">
                                 <img src={CLOCK_IMG} alt="time"/>
                                 <div className="weather-indicator-value">
-                                    12.04
+                                    12:04
                                 </div>
                             </div>
                         </Tooltip>

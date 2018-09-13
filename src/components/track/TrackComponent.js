@@ -2,6 +2,7 @@ import React from "react";
 import "./TrackComponent.css";
 import SVG from "svg.js";
 import roadTexture from "./img/road_two.jpg";
+
 import car1 from "./img/cars/car_01.png";
 import car2 from "./img/cars/car_11.png";
 import car3 from "./img/cars/car_21.png";
@@ -140,18 +141,18 @@ export default class TrackComponent extends React.Component {
 //start line
         let startLine = this.draw.rect(20 * scale, longStraightWay.width).fill(pattern).move(x2, longStraightWay.width / 2/*y1 - (longStraightWay.width / 2) */);
 
-        this.addCar(car1, 40000);
-        this.addCar(car2, 50000);
-        this.addCar(car3, 70000);
+        this.addCar(car1, 40000, 0);
+        this.addCar(car2, 50000, 1.8);
+        this.addCar(car3, 70000, 3.6);
     };
 
-    addCar = (image, animationTime) => {
+    addCar = (image, animationTime, trackOffset = 1.8) => {
         let length = this.path.length();
         let carContainer = this.draw.group();
         let car = carContainer.image(image).size(4.8 * carScale, 1.8 * carScale);
         let boundingBoxMax = Math.sqrt(Math.pow(4.8 * carScale, 2) * 2);
         carContainer.rect(boundingBoxMax, boundingBoxMax).fill('transparent');
-        car.move(boundingBoxMax / 2 - 4.8 * carScale / 2, boundingBoxMax / 2 - 1.8 * carScale / 2);
+        car.move(boundingBoxMax / 2 - 4.8 * carScale / 2, boundingBoxMax / 2 - trackOffset * carScale / 2);
 
         //var car = carContainer.rect(4.8 * carScale, 1.8 * carScale).stroke(1).fill('transparent').attr({ 'stroke-width': 1 })
 
@@ -188,7 +189,7 @@ export default class TrackComponent extends React.Component {
         return (
             <div ref={(ref) => {
                 this.trackWrapper = ref;
-            }}>
+            }} className="ic-track-wrapper">
             </div>
         )
     }
