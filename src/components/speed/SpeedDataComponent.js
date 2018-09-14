@@ -14,7 +14,6 @@ export default class SpeedDataComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            carInformation: undefined,
             x: []
         };
 
@@ -33,8 +32,12 @@ export default class SpeedDataComponent extends React.Component {
         }, 5000);
 
         //get car information
-        CarInformationService.getCarInformation(this.props.carNumber).then(data => {
-            console.log("Car data", data);
+        CarInformationService.getCarInformation(this.props.carNumber).then(response => {
+            this.setState({
+                ...response.data.entry_info_data
+            }, () => {
+                console.log(this.state)
+            });
         });
     }
 
@@ -46,21 +49,21 @@ export default class SpeedDataComponent extends React.Component {
                         <div className="speed-data-car-info">
                             <div className="speed-data-car-info-middle">
                                 <div className="speed-data-car-info-number">
-                                    34
+                                    {this.state.car_num}
                                 </div>
                                 <div className="speed-data-car-info-engine">
-                                    HONDA
+                                    {this.state.engine}
                                 </div>
                             </div>
                         </div>
                         <div className="speed-data-driver-info">
                             <div className="speed-data-driver-info-bio">
-                                <div className='speed-data-driver-name'>Scott Dixon</div>
+                                <div className='speed-data-driver-name'>{this.state.driver_name}</div>
                                 <div className='speed-data-driver-hometown'>
-                                    <Icon icon="map-marker"/> Auckland New Zealand
+                                    <Icon icon="map-marker"/>&nbsp;{this.state.home_town}
                                 </div>
                                 <div className='speed-data-driver-team'>
-                                    <Icon icon="people"/> Chip Ganassi Racing Teams #25
+                                    <Icon icon="people"/>&nbsp;{this.state.team}
                                 </div>
                             </div>
                             <div className="speed-data-driver-info-other">
@@ -68,13 +71,13 @@ export default class SpeedDataComponent extends React.Component {
                                     <div>
                                         <Icon icon="id-number"/>
                                     </div>
-                                    <div className="speed-data-driver-info-other-licence">Veteran</div>
+                                    <div className="speed-data-driver-info-other-licence">{this.state.license}</div>
                                 </div>
                                 <div className="speed-data-driver-info-other-col">
                                     <div>
                                         <Icon icon="drive-time"/>
                                     </div>
-                                    <div className="speed-data-driver-info-other-competitor-id">370</div>
+                                    <div className="speed-data-driver-info-other-competitor-id">{this.state.competitor_identifier}</div>
                                 </div>
                                 <div className="speed-data-driver-info-other-col">
                                     <div>
@@ -92,6 +95,7 @@ export default class SpeedDataComponent extends React.Component {
                                 {
                                     borderColor: "#90A4AE",
                                     backgroundColor: "#263238",
+                                    borderWidth:0.5,
                                     data: this.state.x
                                 }
                             ]

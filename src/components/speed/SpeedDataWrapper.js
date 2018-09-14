@@ -7,6 +7,10 @@ import "./SpeedDataWrapper.css";
  */
 export default class SpeedDataWrapper extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <div className="speed-data-wrapper">
