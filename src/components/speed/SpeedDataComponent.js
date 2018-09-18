@@ -17,26 +17,49 @@ export default class SpeedDataComponent extends React.Component {
             x: []
         };
 
-        for (let i = 0; i < 18; i++) {
-            this.state.x.push(Math.floor(Math.random() * 250))
-        }
+        // for (let i = 0; i < 18; i++) {
+        //     this.state.x.push(Math.floor(Math.random() * 250))
+        // }
     }
 
-    componentDidMount() {
-        setInterval(() => {
-            let x = [];
-            for (let i = 0; i < 18; i++) {
-                x.push(Math.floor(Math.random() * 250))
-            }
-            this.setState({x});
-        }, 5000);
-
+    updateCarInformation = (props = this.props) => {
         //get car information
-        CarInformationService.getCarInformation(this.props.carNumber).then(response => {
+        CarInformationService.getCarInformation(props.carNumber).then(response => {
             this.setState({
                 ...response.data.entry_info_data
             });
         });
+    };
+
+    updateSectionTiming(props = this.props) {
+        CarInformationService.getSectionTiming(props.carNumber, props.carData.currentLap).then(response => {
+            let times = response.data.map(sectionTime => 100 / parseFloat(sectionTime.last_section_time.split(":")[2]));
+            this.setState({
+                x: times
+            })
+        });
+    }
+
+    componentDidMount() {
+        // setInterval(() => {
+        //     let x = [];
+        //     for (let i = 0; i < 18; i++) {
+        //         x.push(Math.floor(Math.random() * 250))
+        //     }
+        //     this.setState({x});
+        // }, 5000);
+
+        this.updateCarInformation();
+        this.updateSectionTiming();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.carNumber !== this.props.carNumber) {
+            this.updateCarInformation(nextProps);
+            this.updateSectionTiming(nextProps);
+        } else if (nextProps.carData.currentLap !== this.props.carData.currentLap) {
+            this.updateSectionTiming(nextProps);
+        }
     }
 
     render() {
@@ -75,13 +98,14 @@ export default class SpeedDataComponent extends React.Component {
                                     <div>
                                         <Icon icon="drive-time"/>
                                     </div>
-                                    <div className="speed-data-driver-info-other-competitor-id">{this.state.competitor_identifier}</div>
+                                    <div
+                                        className="speed-data-driver-info-other-competitor-id">{this.state.competitor_identifier}</div>
                                 </div>
                                 <div className="speed-data-driver-info-other-col">
                                     <div>
                                         <Icon icon="badge"/>
                                     </div>
-                                    <div className="speed-data-driver-info-other-rank">#1</div>
+                                    <div className="speed-data-driver-info-other-rank">#{this.props.rank}</div>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +117,7 @@ export default class SpeedDataComponent extends React.Component {
                                 {
                                     borderColor: "#90A4AE",
                                     backgroundColor: "#263238",
-                                    borderWidth:0.5,
+                                    borderWidth: 0.5,
                                     data: this.state.x
                                 }
                             ]

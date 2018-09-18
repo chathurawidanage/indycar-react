@@ -54,7 +54,7 @@ export default class HeaderComponent extends React.Component {
                             <div className="weather-indicator">
                                 <img src={THERMO_IMG} alt="thermometer"/>
                                 <div className="weather-indicator-value">
-                                    60
+                                    77
                                 </div>
                             </div>
                         </Tooltip>
@@ -63,7 +63,7 @@ export default class HeaderComponent extends React.Component {
                             <div className="weather-indicator">
                                 <img src={BARO_IMG} alt="barometer"/>
                                 <div className="weather-indicator-value">
-                                    60
+                                    2893
                                 </div>
                             </div>
                         </Tooltip>
@@ -72,7 +72,7 @@ export default class HeaderComponent extends React.Component {
                             <div className="weather-indicator">
                                 <img src={HUMIDITY_IMG} alt="humidity"/>
                                 <div className="weather-indicator-value">
-                                    40%
+                                    63%
                                 </div>
                             </div>
                         </Tooltip>
@@ -81,7 +81,7 @@ export default class HeaderComponent extends React.Component {
                             <div className="weather-indicator">
                                 <img src={CLOCK_IMG} alt="time"/>
                                 <div className="weather-indicator-value">
-                                    12:04
+                                    12:07
                                 </div>
                             </div>
                         </Tooltip>

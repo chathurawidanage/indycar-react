@@ -4,8 +4,10 @@ import SVG from "svg.js";
 import roadTexture from "./img/road_two.jpg";
 
 import car1 from "./img/cars/car_01.png";
-import car2 from "./img/cars/car_11.png";
-import car3 from "./img/cars/car_21.png";
+import car2 from "./img/cars/car_02.png";
+import car3 from "./img/cars/car_03.png";
+
+import CarInformationService from "../../services/CarInformationService";
 
 //GLOBAL CALCULATIONS//
 
@@ -141,21 +143,24 @@ export default class TrackComponent extends React.Component {
 //start line
         let startLine = this.draw.rect(20 * scale, longStraightWay.width).fill(pattern).move(x2, longStraightWay.width / 2/*y1 - (longStraightWay.width / 2) */);
 
-        this.addCar(car1, 40000, 0);
-        this.addCar(car2, 50000, 1.8);
-        this.addCar(car3, 70000, 3.6);
+
+        let trackOffsets = [0, 1.8, 3.6];
+        let index = 0;
+        CarInformationService.getCarList().then(response => {
+            response.data.forEach(carNumber => {
+                this.addCar(`img/cars/car_${('' + carNumber).padStart(2, '0')}.png`, trackOffsets[index++], carNumber);
+                if (index === 3) {
+                    index = 0;
+                }
+            })
+        });
+
+
+        //this.addCar(car2, 11000, 1.8, 2);
+        //this.addCar(car3, 13000, 3.6, 3);
     };
 
-    addCar = (image, animationTime, trackOffset = 1.8) => {
-        let length = this.path.length();
-        let carContainer = this.draw.group();
-        let car = carContainer.image(image).size(4.8 * carScale, 1.8 * carScale);
-        let boundingBoxMax = Math.sqrt(Math.pow(4.8 * carScale, 2) * 2);
-        carContainer.rect(boundingBoxMax, boundingBoxMax).fill('transparent');
-        car.move(boundingBoxMax / 2 - 4.8 * carScale / 2, boundingBoxMax / 2 - trackOffset * carScale / 2);
-
-        //var car = carContainer.rect(4.8 * carScale, 1.8 * carScale).stroke(1).fill('transparent').attr({ 'stroke-width': 1 })
-
+    animateLap = (carContainer, car, carNumber, lapNumber, animationTime, length, callback) => {
         carContainer.animate(animationTime).during((pos, morph, eased) => {
             let p = this.path.pointAt(eased * length);
             carContainer.center(p.x, p.y);
@@ -182,7 +187,35 @@ export default class TrackComponent extends React.Component {
                 angle = 270 + (distance - fourToThree) / scalledTurnArc * -90;
             }
             car.rotate(angle);
-        }).loop(true, false)
+            CarInformationService.reportDistance(carNumber, distance + (lapNumber - 1) * length, lapNumber);
+        }).after(callback);
+    };
+
+    addCar = (image, trackOffset = 1.8, carNumber) => {
+        let length = this.path.length();
+        let carContainer = this.draw.group();
+        let car = carContainer.image(image).size(4.8 * carScale, 1.8 * carScale);
+        let boundingBoxMax = Math.sqrt(Math.pow(4.8 * carScale, 2) * 2);
+        carContainer.rect(boundingBoxMax, boundingBoxMax).fill('transparent');
+        car.move(boundingBoxMax / 2 - 4.8 * carScale / 2, boundingBoxMax / 2 - trackOffset * carScale / 2);
+
+        //var car = carContainer.rect(4.8 * carScale, 1.8 * carScale).stroke(1).fill('transparent').attr({ 'stroke-width': 1 })
+        // this.animateLap(carContainer, car, animationTime, length, () => {
+        //     console.log(carNumber, "finished one lap");
+        // });
+
+        CarInformationService.getCarLapTimes(carNumber).then(response => {
+            let lapTimes = response.data;
+            let startIndex = 0;
+
+            let animationCallback = () => {
+                if (startIndex < lapTimes.length) {
+                    this.animateLap(carContainer, car, carNumber, lapTimes[startIndex].lap_num, lapTimes[startIndex].lap_time * 500, length, animationCallback);
+                    startIndex++;
+                }
+            };
+            animationCallback();
+        });
     };
 
     render() {
