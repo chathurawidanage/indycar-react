@@ -35,8 +35,6 @@ export default class SpeedDataComponent extends React.Component {
         CarInformationService.getCarInformation(this.props.carNumber).then(response => {
             this.setState({
                 ...response.data.entry_info_data
-            }, () => {
-                console.log(this.state)
             });
         });
     }
