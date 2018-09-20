@@ -24,7 +24,7 @@ let widthSCale = scale * 5;
 
 //calculate the scale with feedback
 scale = Math.min((window.innerWidth - trackWidth * widthSCale * 2) / (trackLongLength + (turnRadius * 2)), (window.innerHeight) / (trackShortLength + turnRadius * 2));
-let carScale = 25 * scale;
+let carScale = 15 * scale;
 
 //scaled dimensions
 let scaledRadius = turnRadius * scale;
@@ -144,7 +144,7 @@ export default class TrackComponent extends React.Component {
         let startLine = this.draw.rect(20 * scale, longStraightWay.width).fill(pattern).move(x2, longStraightWay.width / 2/*y1 - (longStraightWay.width / 2) */);
 
 
-        let trackOffsets = [0, 1.8, 3.6];
+        let trackOffsets = [-1.5, 1.5, 5];
         let index = 0;
         CarInformationService.getCarList().then(response => {
             response.data.forEach(carNumber => {
